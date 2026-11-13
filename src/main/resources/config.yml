@@ -1,0 +1,94 @@
+# The most players a single duel can have, counting both teams. Any split is allowed, so with 16 you can
+# run 8v8, 10v6, 15v1 and so on. (The duel menu fits up to 20 players per team; /duel start has no such limit.)
+max-team-size: 16
+
+# Armor trims that tell the teams apart. Applied to the armor a kit gives out; other items are untouched.
+# Blue is the first team, red the second (their sizes don't matter). material sets the trim colour (quartz, iron, netherite,
+# redstone, copper, gold, emerald, diamond, lapis, amethyst, resin). Each piece takes a trim pattern name
+# such as flow, tide, sentry, dune, coast, wild, ward, eye, vex, snout, rib, spire, silence, wayfinder,
+# shaper, raiser, host, bolt, or "none" for no trim on that piece.
+team-trims:
+  blue:
+    material: diamond
+    helmet: flow
+    chestplate: flow
+    leggings: none
+    boots: tide
+  red:
+    material: redstone
+    helmet: flow
+    chestplate: flow
+    leggings: none
+    boots: tide
+
+# Duels that players set up themselves with /duel (the menu), as opposed to ones an operator starts.
+player-duels:
+  # Turn this off to stop players from setting up duels (they can still use kit layouts and answer invites).
+  enabled: true
+  # Seconds an invite stays open before it expires.
+  invite-timeout-seconds: 60
+  # Seconds a player must wait after a finished player-run duel before they can send another request.
+  # 0 means no wait.
+  cooldown-seconds: 0
+  # Count wins from player-run duels on the /duel top leaderboard. Off by default so friends can't farm it.
+  count-wins-on-leaderboard: false
+  # Announce the result of player-run duels to the whole server (off: only the duelists see it).
+  broadcast-result: false
+  # Run winner-commands for player-run duels too. Off by default so friends can't farm rewards.
+  run-winner-commands: false
+
+# Seconds players are frozen before the fight starts.
+countdown-seconds: 5
+
+# Seconds between the duel ending and players being sent back with their items.
+end-delay-seconds: 3
+
+# Kit used when /duel start is run without a kit name.
+# If left empty and exactly one kit exists, that kit is used.
+default-kit: ""
+
+# Announce the result to the whole server.
+broadcast-result: true
+
+# Console commands run when a duel ends with a winner. Placeholders: {winner} {loser}
+# Example: - "give {winner} diamond 3"
+winner-commands: []
+
+rules:
+  # Let players who are fighting in a running duel ignore other protection plugins (WorldGuard, etc.)
+  # inside their own arena: they can break and place blocks, use items and hurt each other even where those
+  # plugins say no. Everyone else stays bound by them. Only the duel's own rules apply to duelists.
+  override-protection-plugins: true
+  # Let teammates hurt each other in team duels. Covers melee and projectiles; potions and explosions
+  # set off by a teammate may still hurt.
+  friendly-fire: false
+  # Let duelists drop items. Off by default so items can't leak out of the arena.
+  allow-item-drops: false
+  # Extra commands duelists may use (without the slash). /duel, /ff and /forfeit are always allowed.
+  # Players with duelevent.bypass can use anything.
+  allowed-commands: []
+
+forfeit:
+  # A /ff vote that isn't completed by every living teammate within this many seconds is dropped.
+  vote-timeout-seconds: 30
+
+arena:
+  # Rebuild the arena from its snapshot right before each duel starts. This is the safety net:
+  # whatever happened to the arena since the last duel (griefing, explosions, other plugins),
+  # it is put back first. Adds a short wait (usually a second or two) before the duel begins.
+  repair-before-fight: true
+
+  # Also rebuild the arena as soon as a duel ends, so it looks right between fights.
+  # With this on, an arena left damaged by a crash is also repaired when the server starts.
+  repair-after-fight: false
+
+  # Stop players, explosions, fluids, fire, growth and mobs from changing an arena while no duel is
+  # running. Players with duelevent.bypass (ops by default) can still build, e.g. when setting it up.
+  # This can't stop changes made by other plugins (WorldEdit, etc.), which is what repair-before-fight is for.
+  protect-when-idle: false
+
+regen:
+  # How many blocks are scanned/restored per tick. Lower this if repairs cause lag.
+  blocks-per-tick: 20000
+  # Refuse arenas bigger than this many blocks.
+  max-volume: 4000000

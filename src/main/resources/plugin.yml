@@ -1,0 +1,56 @@
+name: DuelEvent
+version: '1.2.4'
+main: dev.duelevent.DuelPlugin
+api-version: '26.2'
+description: Event duels for teams of any size, run by operators or set up by players, with kits, inventory backup and arena regeneration.
+authors: [DuelEvent]
+
+commands:
+  duel:
+    description: Run and manage event duels
+    usage: /duel [help|kitlayout|accept|decline|cancel|leave|top|start|stop|list|arena|kit|reload]
+  ff:
+    description: Vote with your team to forfeit your current duel
+    usage: /ff
+    aliases: [forfeit]
+
+permissions:
+  duelevent.admin:
+    description: Everything below (ops by default)
+    default: op
+    children:
+      duelevent.start: true
+      duelevent.arena: true
+      duelevent.kit: true
+      duelevent.reload: true
+      duelevent.reset: true
+  duelevent.start:
+    description: Start and stop duels, and list running ones
+    default: false
+  duelevent.arena:
+    description: Create, edit, snapshot and delete arenas
+    default: false
+  duelevent.kit:
+    description: Create and delete kits (copies your own inventory)
+    default: false
+  duelevent.reload:
+    description: Reload the config and kits
+    default: false
+  duelevent.reset:
+    description: Reset the duel win leaderboard (needs a confirmation command)
+    default: false
+  duelevent.top:
+    description: View the duel win leaderboard
+    default: true
+  duelevent.create:
+    description: Set up duels and send duel requests to other players
+    default: true
+  duelevent.layout:
+    description: Rearrange a kit's items with /duel kitlayout (saved per player)
+    default: true
+  duelevent.participate:
+    description: Lets a player vote to forfeit their own duel
+    default: true
+  duelevent.bypass:
+    description: Ignore the duel command restrictions and arena build protection
+    default: op
