@@ -267,3 +267,11 @@ their defaults until you add them, or delete the old file so a fresh one is crea
 - Splash potions and explosions from a teammate aren't covered by the friendly-fire setting.
 - If a `/ff` clashes with another plugin's command, use `/duelevent:ff`.
 - Very large arenas take a while to snapshot and rebuild (default limit is 4,000,000 blocks).
+
+## 1.2.5: RamGraves and PvE players
+
+Use DuelEvent 1.2.5 with RamGraves 1.0.0-beta.2 and RamCore 1.6.1. The public main-thread methods `isDuelParticipant(UUID)` and `allowsDuelCombat(UUID, UUID)` expose match ownership and exact combat eligibility. Only live fighters in the same FIGHTING match receive the PvE-mode exception, respecting friendly fire. Stored PvE/PvP modes and weekly cooldowns are unchanged.
+
+RamGraves skips duel deaths, including fallback deaths during match cleanup. RamCore defers duel tags and logout penalties to DuelEvent. DuelEvent alone restores the saved inventory. While RamGraves is enabled, the damage handler does not force-uncancel protected attacks; region/claim cancellations remain in force even if the old protection-override setting is enabled.
+
+Compile/API tests passed. Validate inventory restoration and normal/indirect combat on a staging server before deployment.

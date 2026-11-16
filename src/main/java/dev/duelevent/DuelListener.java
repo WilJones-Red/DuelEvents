@@ -142,6 +142,8 @@ final class DuelListener implements Listener {
             return;
         }
         if (e.isCancelled()) {
+            // RamGraves supplies the narrow duel exemption itself; never override its or claims' denial.
+            if (plugin.getServer().getPluginManager().isPluginEnabled("RamGraves")) return;
             // Something else (WorldGuard's no-PvP flag, invincible, ...) cancelled this. If the duel's own
             // rules allow it, let it through: duelists have their own rules inside the arena.
             if (!overrideOn() || !allowedByDuelRules(e, d, p)) return;

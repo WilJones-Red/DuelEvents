@@ -64,6 +64,20 @@ public final class DuelPlugin extends JavaPlugin {
         if (duels != null) duels.shutdown();
     }
 
+    /** Main-thread integration API. Includes countdown, spectators, and ending restoration. */
+    public boolean isDuelParticipant(java.util.UUID player) {
+        return duels != null && duels.duelOf(player) != null;
+    }
+
+    /** Only eligible fighters in the same active match receive a PvE-mode exception. */
+    public boolean allowsDuelCombat(java.util.UUID attacker, java.util.UUID victim) {
+        if (duels == null || attacker.equals(victim)) return false;
+        Duel duel = duels.duelOf(attacker);
+        return duel != null && duel == duels.duelOf(victim) && duel.phase == Duel.Phase.FIGHTING
+            && duel.isAlive(attacker) && duel.isAlive(victim)
+            && (getConfig().getBoolean("rules.friendly-fire", false) || duel.teamOf(attacker) != duel.teamOf(victim));
+    }
+
     StateManager states() {
         return states;
     }

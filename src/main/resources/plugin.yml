@@ -1,5 +1,5 @@
 name: DuelEvent
-version: '1.2.4'
+version: '${version}'
 main: dev.duelevent.DuelPlugin
 api-version: '26.2'
 description: Event duels for teams of any size, run by operators or set up by players, with kits, inventory backup and arena regeneration.
