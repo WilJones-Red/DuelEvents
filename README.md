@@ -275,3 +275,6 @@ Use DuelEvent 1.2.5 with RamGraves 1.0.0-beta.2 and RamCore 1.6.1. The public ma
 RamGraves skips duel deaths, including fallback deaths during match cleanup. RamCore defers duel tags and logout penalties to DuelEvent. DuelEvent alone restores the saved inventory. While RamGraves is enabled, the damage handler does not force-uncancel protected attacks; region/claim cancellations remain in force even if the old protection-override setting is enabled.
 
 Compile/API tests passed. Validate inventory restoration and normal/indirect combat on a staging server before deployment.
+
+### 1.2.6 — breakable duel entities
+Active fighters can break end crystals, vehicles, hanging entities, and armor stands within their own arena. This follows rules.override-protection-plugins, just like block breaking. Countdown players, spectators, and outsiders cannot use it to bypass arena protection. Player damage and RamGraves PvE protections remain separate.

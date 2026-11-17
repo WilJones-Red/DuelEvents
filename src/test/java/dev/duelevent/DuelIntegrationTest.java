@@ -13,7 +13,7 @@ public final class DuelIntegrationTest {
         var config=new YamlConfiguration();doReturn(config).when(plugin).getConfig();
         Player a=player(),b=player(),friend=player(),outsider=player();
         UUID aid=a.getUniqueId(),bid=b.getUniqueId(),fid=friend.getUniqueId(),oid=outsider.getUniqueId();
-        Duel duel=new Duel(null,null,new Team(List.of(a,friend)),new Team(List.of(b)),true);
+        Duel duel=new Duel(mock(Arena.class),null,new Team(List.of(a,friend)),new Team(List.of(b)),true);
         when(manager.duelOf(aid)).thenReturn(duel);when(manager.duelOf(bid)).thenReturn(duel);when(manager.duelOf(fid)).thenReturn(duel);
         check(plugin.isDuelParticipant(aid),"Countdown participant recognized");
         check(!plugin.allowsDuelCombat(aid,bid),"No countdown combat exemption");
@@ -26,6 +26,26 @@ public final class DuelIntegrationTest {
         duel.team2.alive.add(bid);duel.phase=Duel.Phase.ENDING;
         check(!plugin.allowsDuelCombat(aid,bid)&&plugin.isDuelParticipant(aid),"Ending restoration remains grave-free");
         when(manager.duelOf(aid)).thenReturn(null);check(!plugin.isDuelParticipant(aid),"Normal survival resumes after leaving");
+        when(manager.duelOf(aid)).thenReturn(duel);
+        duel.phase=Duel.Phase.FIGHTING;
+        var loc=new org.bukkit.Location(mock(org.bukkit.World.class),0,64,0);
+        when(a.getLocation()).thenReturn(loc);
+        when(duel.arena.contains(loc)).thenReturn(true);
+        var crystal=mock(org.bukkit.entity.EnderCrystal.class);
+        when(crystal.getLocation()).thenReturn(loc);
+        var event=mock(org.bukkit.event.entity.EntityDamageByEntityEvent.class);
+        when(event.getEntity()).thenReturn(crystal); when(event.getDamager()).thenReturn(a);
+        when(event.isCancelled()).thenReturn(true);
+        DuelListener listener=new DuelListener(plugin);
+        listener.onBreakEntity(event); verify(event).setCancelled(false); checks++;
+        clearInvocations(event); duel.phase=Duel.Phase.COUNTDOWN;
+        listener.onBreakEntity(event); verify(event).setCancelled(true); verify(event,never()).setCancelled(false); checks++;
+        clearInvocations(event); duel.phase=Duel.Phase.FIGHTING;
+        config.set("rules.override-protection-plugins",false);
+        listener.onBreakEntity(event); verify(event,never()).setCancelled(false); checks++;
+        clearInvocations(event); config.set("rules.override-protection-plugins",true);
+        when(duel.arena.contains(loc)).thenReturn(false);
+        listener.onBreakEntity(event); verify(event).setCancelled(true); checks++;
         System.out.println("Duel integration checks passed: "+checks);
     }
 }

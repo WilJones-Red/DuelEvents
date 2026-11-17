@@ -411,6 +411,22 @@ final class DuelListener implements Listener {
         return a != null && a.contains(to);
     }
 
+    /** Destructible combat entities follow the same arena boundaries as block breaking. */
+    @EventHandler(priority = EventPriority.HIGHEST)
+    public void onBreakEntity(EntityDamageByEntityEvent e) {
+        Entity target=e.getEntity();
+        if (!(target instanceof org.bukkit.entity.EnderCrystal
+                || target instanceof org.bukkit.entity.Vehicle
+                || target instanceof org.bukkit.entity.Hanging
+                || target instanceof org.bukkit.entity.ArmorStand)) return;
+        Entity source=e.getDamager();
+        if(source instanceof Projectile projectile && projectile.getShooter() instanceof Entity shooter) source=shooter;
+        if(!(source instanceof Player player)) return;
+        if(denyBlock(player,target.getLocation())) { e.setCancelled(true); return; }
+        if(e.isCancelled() && overrideOn() && fighterInArena(player,target.getLocation())
+                && fighterInArena(player,player.getLocation())) e.setCancelled(false);
+    }
+
     @EventHandler(priority = EventPriority.HIGHEST)
     public void overrideBreak(BlockBreakEvent e) {
         if (e.isCancelled() && overrideOn() && fighterInArena(e.getPlayer(), e.getBlock().getLocation())) {
